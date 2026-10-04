@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Phase III">
+<meta name="theme-color" content="#0B0F1A">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACwklEQVR42u3awVHcMBiG4ayGG5nhlAsFcd4C3EHqSSGUQh1cUwAN4I1jy7b8/c97ZVlg9YzR/NLt+eX1h/RdzUcgOASH4BAcgkNwCA7BITgEhwSH4BAcgkNwCA7BITgEh+CQ4BAcgqNT9/eP+/uHzwEOwSE41L2nan/w39+/Hnx1+tdrfv759OSoKOOYd4AjU0Y1H40MPjw5BIfgEByCQ3AIjhHrO9ksMict9OTotaJ1Jui1/q1sX9dSZyvlDt4er+79rZwATw7BITgEh2xIj2rJOfu07JXmHOVknPVucOTIqOOjkcGHDangEByCQ3AIDsExVvtNM+PnpCWeHHusYoUJujukZMxW6OBtyYq6CWZDKjgEh+CQDekOLT9bn/7n9eYchWSM885wXFtGBR+NDD5sSAWH4BAcgkNwCI5ROmaCGTwnDX9y7L1y2RN0d0jJmK3EwdvyVXQTzIZUcAgOwSEb0n6tOEyfVn1j6ga2kXGtnwXH9VYr0kcjgw8bUsEhOASH4BAcguPkzppX5s1JM58cx69T5AQ99t/KkauVeraSfPC2Ys3cBLMhFRyCQ3DIhrRHq0/Ppw3fbs6RLOOiPxeOa6xQmI9GBh82pIJDcAgOwSE4BMdpjTCjTJqTpj05zl2bsAm6O6RkzJZ58LZ6ndwEsyEVHIJDcMiGdFsbT8ynzW9izpEpI+Z3gGPcVYnx0cjgw4ZUcAgOwSE4BIfgOKHR5pIZc9KcJ8c46xEzQXeHlIzZ0g7eNq6Nm2A2pIJDcAgO2ZCurcsp+dTprcw50mQE/z51cYy5EgE+Ghl82JAKDsEhOASH4BAchzbyLPLqc9KEJ8eYaxAwQXeHlIzZcg7euqyHm2A2pIJDcGinbs8vrz4FeXIIDsEhOASH4BAcgkNwCA4JDsEhOASH4BAcgkNwCA7BIcEhOASH4BAcgkMD9wUPGL8B86DskgAAAABJRU5ErkJggg==">
+<title>Phase III — Daily</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Bungee&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0F1A; --card:#121A2C; --card2:#1A2540; --line:#2B3B5E;
+    --ink:#F6EFE6; --dim:#93A4C4; --accent:#FF7A2F; --accent-soft:#2A1C18;
+    --amber:#5BC0EB;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; background:var(--bg); color:var(--ink);}
+  body{font-family:'Barlow',-apple-system,system-ui,sans-serif; font-size:16px; line-height:1.45;
+       padding-bottom:calc(84px + env(safe-area-inset-bottom));}
+  header{position:sticky; top:0; z-index:50;
+         background:linear-gradient(180deg, #101728 0%, var(--bg) 100%);
+         padding:calc(10px + env(safe-area-inset-top)) 14px 0; border-bottom:1px solid var(--line);}
+  .brand{display:flex; flex-direction:column; gap:2px; max-width:86px;}
+  .brand h1{font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:11px;
+            letter-spacing:.09em; text-transform:uppercase; margin:0; line-height:1.18; color:var(--dim);}
+  .brand h1 em{font-style:normal; color:var(--dim);}
+  .brand h1 span{color:var(--accent);}
+  .brand h1 span{color:var(--accent);}
+  .brand .sub{font-size:9px; color:var(--dim); letter-spacing:.12em; text-transform:uppercase;
+              font-family:'Barlow Condensed',sans-serif;}
+  .weekbar{display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:center; margin:10px 0;}
+  .weekbar .lbl{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13px;
+                letter-spacing:.14em; color:var(--dim); text-transform:uppercase;}
+  .weeks{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
+  .wk{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:15px;
+      padding:9px 0; text-align:center; border:1px solid var(--line); border-radius:8px;
+      background:var(--card); color:var(--dim); cursor:pointer;}
+  .wk.active{background:var(--accent); border-color:var(--accent); color:#0B0F1A; box-shadow:0 0 12px rgba(255,122,47,.35);}
+  .tabs{display:flex; gap:6px; overflow-x:auto; padding:2px 0 10px; scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex:0 0 auto; font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:16px;
+       letter-spacing:.06em; text-transform:uppercase; padding:8px 14px; border-radius:999px;
+       border:1px solid var(--line); background:var(--card); color:var(--dim); cursor:pointer;}
+  .tab.active{color:var(--accent); border-color:var(--accent); background:var(--accent-soft); box-shadow:0 0 10px rgba(255,122,47,.22);}
+  .segbar{display:flex; gap:0; margin:0 0 12px; border:1px solid var(--line); border-radius:10px;
+          overflow:hidden; background:var(--card);}
+  .seg{flex:1; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:15px;
+       letter-spacing:.1em; text-transform:uppercase; padding:11px 0; text-align:center;
+       border:none; background:transparent; color:var(--dim); cursor:pointer;
+       border-right:1px solid var(--line);}
+  .seg:last-child{border-right:none;}
+  .seg.active{background:var(--accent); color:#0B0F1A; box-shadow:0 0 14px rgba(255,122,47,.3);}
+  main{padding:14px 14px 30px; max-width:560px; margin:0 auto;}
+  .dayhead{display:flex; align-items:center; justify-content:space-between; margin:2px 0 4px;}
+  .dayhead h2{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:26px;
+              letter-spacing:.04em; text-transform:uppercase; margin:0;}
+  .chip{font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em;
+        text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+        border-radius:6px; padding:3px 8px; background:var(--accent-soft);}
+  .flow{font-size:12.5px; color:var(--dim); margin:0 0 12px;}
+  .flow b{color:var(--ink); font-weight:600;}
+  .blockhead{font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px;
+             letter-spacing:.16em; text-transform:uppercase; color:var(--dim);
+             margin:18px 2px 8px; display:flex; align-items:center; gap:10px;}
+  .blockhead::after{content:""; flex:1; height:1px;
+             background:linear-gradient(90deg, var(--accent), var(--line) 45%); opacity:.55;}
+  .ex{display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line);
+      border-radius:12px; padding:12px 12px 12px 10px; margin-bottom:8px; cursor:pointer;
+      box-shadow:none;}
+  .ex:active{background:var(--card2);}
+  .badge{flex:0 0 auto; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:15px;
+         color:var(--accent); width:36px; text-align:center;}
+  .ex .body{flex:1; min-width:0;}
+  .ex .nm{font-weight:600; font-size:15.5px;}
+  .ex .rx{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:22px;
+          margin:2px 0 1px; color:var(--accent);}
+  .ex .cue{font-size:12.5px; color:var(--dim);}
+  .tick{flex:0 0 auto; width:26px; height:26px; border-radius:50%; border:1.5px solid var(--line);
+        display:flex; align-items:center; justify-content:center; color:transparent; font-size:14px;}
+  .ex.done{opacity:.45; border-color:var(--accent-soft);}
+  .ex.done .tick{background:var(--accent); border-color:var(--accent); color:#0B0F1A;}
+  .clearrow{display:flex; justify-content:flex-end; margin:14px 2px 4px; font-size:13px;}
+  .clearrow a{color:var(--accent); text-decoration:none;}
+  .note{font-size:13px; color:var(--dim); background:var(--card); border:1px solid var(--line);
+        border-radius:12px; padding:12px 14px; margin:12px 0;}
+  .note b{color:var(--ink);}
+  .ph{border:1px dashed var(--line); border-radius:12px; padding:28px 16px; text-align:center;
+      background:var(--card); margin:8px 0;}
+  .ph h3{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:19px;
+         letter-spacing:.08em; text-transform:uppercase; margin:0 0 6px;}
+  .ph p{color:var(--dim); font-size:13.5px; margin:0;}
+  .info h3{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:17px;
+           letter-spacing:.1em; text-transform:uppercase; margin:20px 0 6px; color:var(--accent);}
+  .info p, .info li{font-size:14.5px;}
+  .info .d{color:var(--dim);}
+  .info ul{margin:4px 0 0; padding-left:18px;}
+  .rest{padding:40px 10px; text-align:center;}
+  .rest h2{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:28px;
+           letter-spacing:.06em; text-transform:uppercase;}
+  .rest p{color:var(--dim);}
+  .bottombar{position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--card);
+             border-top:1px solid var(--line); display:flex; align-items:center; gap:14px;
+             padding:10px 14px calc(10px + env(safe-area-inset-bottom));}
+  .prog{flex:1; min-width:0;}
+  .prog .lab{font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px;
+             letter-spacing:.1em; text-transform:uppercase; color:var(--dim); margin-bottom:5px;}
+  .prog .lab b{color:var(--ink);}
+  .bar{height:6px; border-radius:3px; background:var(--card2); overflow:hidden;}
+  .bar i{display:block; height:100%; width:0%; background:linear-gradient(90deg,#5BC0EB,#FF7A2F); border-radius:3px; box-shadow:0 0 8px rgba(255,122,47,.6);}
+  .timerbtn{flex:0 0 auto; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:17px;
+            letter-spacing:.06em; text-transform:uppercase; color:#0B0F1A; background:var(--accent); box-shadow:0 0 14px rgba(255,122,47,.35);
+            border:none; border-radius:999px; padding:12px 20px; min-width:118px; cursor:pointer;}
+  .timerbtn.running{background:var(--card2); color:var(--accent); border:1px solid var(--accent);}
+  .timerbtn.donef{background:#FF7A2F; color:#0B0F1A;}
+
+  /* spine motifs */
+  .spinemark{position:absolute; right:10px; top:calc(6px + env(safe-area-inset-top));
+             opacity:.16; pointer-events:none;}
+  .brandwrap{position:relative; display:grid; grid-template-columns:auto 1fr auto; align-items:center;
+             gap:8px; padding:9px 0 8px;
+             background:radial-gradient(ellipse at 50% 50%, rgba(255,122,47,.05) 0%, rgba(255,122,47,0) 70%);}
+  .brandwrap::before,.brandwrap::after{content:""; position:absolute; left:-14px; right:-14px; height:1px;
+             background:linear-gradient(90deg, transparent, #5BC0EB 8%, #FF7A2F 45%, #FF5C7A 80%, transparent);
+             opacity:.55; box-shadow:0 0 6px rgba(255,122,47,.5);}
+  .brandwrap::before{top:0;} .brandwrap::after{bottom:0;}
+  .blockhead .vert{flex:0 0 auto; opacity:.75;}
+  .heroband{display:flex; align-items:center; gap:12px;
+            background:linear-gradient(90deg, var(--accent-soft), var(--card) 65%);
+            border:1px solid var(--line); border-left:3px solid var(--accent);
+            border-radius:12px; padding:12px 14px; margin:0 0 12px;}
+  .heroband .txt{flex:1; min-width:0;}
+  .heroband .lbl{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11.5px;
+                 letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-bottom:2px;}
+  .heroband .cue{font-size:13px; color:var(--ink); line-height:1.35;}
+  .segwatch{display:flex; align-items:flex-start; gap:10px; background:var(--accent-soft);
+            border:1px solid var(--line); border-radius:12px; padding:11px 13px; margin:14px 0 4px;}
+  .segwatch .t{font-size:12.5px; color:var(--ink);}
+  .segwatch .t b{color:var(--accent);}
+  .divider{display:flex; align-items:center; justify-content:center; margin:22px 0 6px; opacity:.3;}
+
+
+  /* evolution performance training banner */
+  .epbanner{position:relative; text-align:center; padding:2px 4px; margin:0;}
+  .epbanner .ep{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:16px;
+                letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin:0;
+                line-height:1.04;}
+  .epbanner .by{font-family:'Barlow',sans-serif; font-weight:500; font-size:8.5px;
+                letter-spacing:.2em; text-transform:uppercase; color:var(--dim); margin-top:6px;}
+
+  @keyframes epglow{
+    0%,100%{text-shadow:0 1px 0 #0B0F1A, 0 0 8px rgba(255,122,47,.35);}
+    50%{text-shadow:0 1px 0 #0B0F1A, 0 0 13px rgba(255,122,47,.6);}
+  }
+  @media (prefers-reduced-motion: reduce){ .epbanner .ep{animation:none;} }
+
+
+  /* ===== retro CRT layer ===== */
+  body::before{content:""; position:fixed; inset:0; z-index:200; pointer-events:none;
+    background:repeating-linear-gradient(180deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+               rgba(0,0,0,.26) 3px, rgba(0,0,0,.26) 4px);
+    mix-blend-mode:multiply; opacity:.55;}
+  body::after{content:""; position:fixed; inset:0; z-index:201; pointer-events:none;
+    background:radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 52%, rgba(0,0,0,.55) 100%);}
+  @keyframes flicker{0%,96%,100%{opacity:1;}97%{opacity:.92;}98%{opacity:.98;}99%{opacity:.9;}}
+  header{animation:flicker 7s steps(1) infinite;}
+  /* chunky retro type */
+  .brand h1{font-family:'Bungee',sans-serif !important; font-size:9.5px !important;
+            letter-spacing:.01em !important; line-height:1.42 !important; color:#9FB4D6 !important;}
+  .epbanner .ep{font-family:'Bungee',sans-serif !important; font-size:14.5px !important;
+                letter-spacing:.02em !important; line-height:1.24 !important;
+                color:#FFB27A !important;
+                text-shadow:0 1px 0 #0B0F1A, 0 0 10px rgba(255,122,47,.45) !important;
+                animation:epglow 4.2s ease-in-out infinite;}
+  .epbanner .by{font-family:'VT323',monospace !important; font-size:14px !important;
+                letter-spacing:.18em !important; color:var(--amber) !important;
+                text-shadow:0 0 6px rgba(91,192,235,.7);}
+  .ex .rx{font-family:'VT323',monospace !important; font-size:29px !important;
+          letter-spacing:.02em !important; line-height:1;}
+  .prog .lab{font-family:'VT323',monospace !important; font-size:17px !important; letter-spacing:.1em !important;}
+  .timerbtn{font-family:'VT323',monospace !important; font-size:22px !important; letter-spacing:.08em !important;}
+  .wk{font-family:'VT323',monospace !important; font-size:20px !important;}
+  .railtxt,.footspine .ft{font-family:'Bungee',sans-serif !important; letter-spacing:.14em !important;}
+  /* hard-edged retro chrome */
+  .ex,.wk,.tab,details,.note,.heroband,.segwatch,.ph,.segbar{border-radius:3px !important;}
+  .tick{border-radius:2px !important;}
+  .timerbtn{border-radius:3px !important;}
+  .bar,.bar i{border-radius:0 !important;}
+  .ex{border-left:3px solid var(--line);}
+  .ex.done{border-left-color:var(--accent);}
+  .badge{font-family:'VT323',monospace !important; font-size:19px !important; color:var(--amber);}
+  .blockhead{color:var(--amber);}
+  .blockhead::after{background:linear-gradient(90deg, var(--amber), var(--line) 45%) !important;}
+  .heroband .lbl{color:var(--amber);}
+  .chip{border-radius:2px !important; font-family:'VT323',monospace; font-size:15px;}
+
+  .blocktip{font-family:'VT323',monospace; font-size:15.5px; line-height:1.25; color:var(--amber);
+            background:var(--card); border-left:3px solid var(--amber); border-radius:3px;
+            padding:7px 10px; margin:-2px 0 9px; opacity:.92;}
+  .ex .tip{font-family:'VT323',monospace; font-size:15px; line-height:1.2; color:var(--accent);
+           margin-top:4px; opacity:.85;}
+
+  .phaselbl{font-family:'VT323',monospace; font-size:16px; letter-spacing:.08em; color:var(--dim);
+            margin:-4px 0 8px; text-transform:uppercase;}
+  .phaselbl b{color:var(--accent); font-weight:400;}
+  .chips{display:flex; gap:5px; flex-wrap:wrap; justify-content:flex-end;}
+  .daynote{font-family:'VT323',monospace; font-size:16px; line-height:1.25; color:var(--ink);
+           background:var(--card); border:1px solid var(--line); border-radius:3px; padding:8px 10px; margin:0 0 6px;}
+  /* side spine rails */
+  .rail{position:fixed; top:0; bottom:0; width:78px; display:none; align-items:center;
+        justify-content:center; pointer-events:none; z-index:5;}
+  .rail.l{left:0;} .rail.r{right:0;}
+  .railin{display:flex; flex-direction:column; align-items:center; gap:14px;
+          filter:drop-shadow(0 0 3px rgba(255,122,47,.45));
+          animation:figglow 3.4s ease-in-out infinite;}
+  .railtxt{font-weight:700; font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+           color:#FFB27A; writing-mode:vertical-rl; text-orientation:mixed;
+           text-shadow:0 1px 0 #0B0F1A, 0 0 9px rgba(255,122,47,.4);}
+  .rail.l .railtxt{transform:rotate(180deg);}
+  .rail.r .railin{transform:scaleX(-1);}
+  .rail.r .railtxt{transform:scaleX(-1);}
+  @media (min-width:820px){ .rail{display:flex;} }
+  /* mobile footer spine */
+  .footspine{display:flex; align-items:center; justify-content:center; gap:16px;
+             margin:26px 0 6px; opacity:.9;
+             filter:drop-shadow(0 0 3px rgba(255,122,47,.4));
+             animation:figglow 3.4s ease-in-out infinite;}
+  .footspine .ft{font-weight:700; font-size:13px; letter-spacing:.2em; text-transform:uppercase;
+                 color:#FFB27A; text-shadow:0 1px 0 #0B0F1A, 0 0 9px rgba(255,122,47,.4);}
+  @media (min-width:820px){ .footspine{display:none;} }
+  /* runner hero */
+  .runner{pointer-events:none; line-height:0;}
+  .markrow{display:flex; align-items:center; gap:9px;}
+  .markrow svg{display:block;}
+  .runner svg{display:block;}
+  @keyframes figglow{
+    0%,100%{filter:drop-shadow(0 0 2px rgba(255,122,47,.5));}
+    50%{filter:drop-shadow(0 0 5px rgba(255,122,47,.75));}
+  }
+  .runner svg{animation:figglow 3.4s ease-in-out infinite;}
+  /* segment + card animations */
+  @keyframes segIn{from{opacity:0; transform:translateY(8px);}to{opacity:1; transform:translateY(0);}}
+  .animseg > *{animation:segIn 260ms cubic-bezier(.22,.9,.3,1) both;}
+  .animseg > *:nth-child(1){animation-delay:0ms;}
+  .animseg > *:nth-child(2){animation-delay:26ms;}
+  .animseg > *:nth-child(3){animation-delay:52ms;}
+  .animseg > *:nth-child(4){animation-delay:78ms;}
+  .animseg > *:nth-child(5){animation-delay:104ms;}
+  .animseg > *:nth-child(6){animation-delay:130ms;}
+  .animseg > *:nth-child(7){animation-delay:156ms;}
+  .animseg > *:nth-child(8){animation-delay:182ms;}
+  .animseg > *:nth-child(n+9){animation-delay:200ms;}
+  @keyframes tickPop{0%{transform:scale(1);}40%{transform:scale(1.35);}100%{transform:scale(1);}}
+  @keyframes cardFlash{0%{box-shadow:0 0 0 0 rgba(255,122,47,.55);}100%{box-shadow:0 0 0 14px rgba(255,122,47,0);}}
+  .ex.justdone{animation:cardFlash 480ms ease-out;}
+  .ex.justdone .tick{animation:tickPop 340ms cubic-bezier(.3,1.4,.5,1);}
+  @media (prefers-reduced-motion: reduce){
+    .runner svg,.animseg > *,.ex.justdone,.ex.justdone .tick{animation:none !important;}
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .ex,.wk,.tab,.seg,.bar i{transition:background .12s ease,opacity .12s ease,color .12s ease,width .25s ease;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brandwrap"><div class="brand">
+    <h1 class="ttl">Spine-Safe<br>Strength Rehab<br><span>Phase III</span></h1>
+    <div class="sub" id="todayLabel"></div>
+  </div>
+  <div class="epbanner">
+    <div class="rule t"></div>
+    <div class="ep">Evolution<br>Performance Training</div>
+    <div class="by">by Luke Abercrombie</div>
+    <div class="rule b"></div>
+  </div>
+  <div class="runner" id="runner"></div></div>
+  <div class="weekbar">
+    <div class="lbl">Week</div>
+    <div class="weeks" id="weeks"></div>
+  </div>
+  <div class="phaselbl" id="phaseLbl"></div>
+  <div class="tabs" id="tabs"></div>
+</header>
+<div class="rail l"><div class="railin" id="railL"></div></div>
+<div class="rail r"><div class="railin" id="railR"></div></div>
+<main id="main"></main>
+<div class="bottombar">
+  <div class="prog">
+    <div class="lab" id="progLab">—</div>
+    <div class="bar"><i id="progFill"></i></div>
+  </div>
+  <button class="timerbtn" id="timerBtn" onclick="timerTap()">Rest 90s</button>
+</div>
+<script>
+
+
+
+const SPINE_ANAT=`<svg width="54" height="248" viewBox="0 0 62 272" fill="var(--accent)" aria-hidden="true"><rect x="35.7" y="14.0" width="6.2" height="4.0" rx="1.7"/><path d="M35.7 14.6 L28.2 17.9 L30.8 19.1 L35.7 17.7 Z"/><rect x="37.5" y="25.8" width="6.5" height="4.1" rx="1.7"/><path d="M37.5 26.4 L29.8 29.7 L32.4 30.9 L37.5 29.6 Z"/><rect x="38.7" y="37.6" width="6.8" height="4.2" rx="1.8"/><path d="M38.7 38.2 L30.8 41.5 L33.4 42.7 L38.7 41.5 Z"/><rect x="39.0" y="49.3" width="7.1" height="4.3" rx="1.8"/><path d="M39.0 49.9 L31.0 53.3 L33.6 54.5 L39.0 53.3 Z"/><rect x="38.4" y="61.1" width="7.4" height="4.4" rx="1.9"/><path d="M38.4 61.7 L30.2 65.2 L32.8 66.4 L38.4 65.2 Z"/><rect x="37.0" y="72.9" width="7.7" height="4.5" rx="1.9"/><path d="M37.0 73.5 L28.6 77.0 L31.2 78.2 L37.0 77.1 Z"/><rect x="35.0" y="84.7" width="8.0" height="4.6" rx="1.9"/><path d="M35.0 85.3 L26.4 88.8 L29.0 90.0 L35.0 89.0 Z"/><rect x="32.6" y="96.4" width="8.3" height="4.7" rx="2.0"/><path d="M32.6 97.0 L23.9 100.6 L26.5 101.8 L32.6 100.9 Z"/><rect x="30.1" y="108.2" width="8.6" height="4.8" rx="2.0"/><path d="M30.1 108.8 L21.2 112.5 L23.8 113.7 L30.1 112.8 Z"/><rect x="27.9" y="120.0" width="8.9" height="5.0" rx="2.1"/><path d="M27.9 120.6 L18.8 124.3 L21.4 125.5 L27.9 124.7 Z"/><rect x="26.2" y="131.8" width="9.2" height="5.1" rx="2.1"/><path d="M26.2 132.4 L16.9 136.1 L19.5 137.3 L26.2 136.5 Z"/><rect x="25.2" y="143.6" width="9.5" height="5.2" rx="2.2"/><path d="M25.2 144.2 L15.7 147.9 L18.3 149.1 L25.2 148.4 Z"/><rect x="25.1" y="155.3" width="9.8" height="5.3" rx="2.2"/><path d="M25.1 155.9 L15.4 159.7 L18.0 160.9 L25.1 160.3 Z"/><rect x="25.8" y="167.1" width="10.1" height="5.4" rx="2.3"/><path d="M25.8 167.7 L16.0 171.6 L18.6 172.8 L25.8 172.2 Z"/><rect x="27.4" y="178.9" width="10.4" height="5.5" rx="2.3"/><path d="M27.4 179.5 L17.4 183.4 L20.0 184.6 L27.4 184.1 Z"/><rect x="29.5" y="190.7" width="10.7" height="5.6" rx="2.3"/><path d="M29.5 191.3 L19.3 195.2 L21.9 196.4 L29.5 196.0 Z"/><rect x="31.9" y="202.4" width="11.0" height="5.7" rx="2.4"/><path d="M31.9 203.0 L21.6 207.0 L24.2 208.2 L31.9 207.8 Z"/><rect x="34.4" y="214.2" width="11.3" height="5.8" rx="2.4"/><path d="M34.4 214.8 L23.9 218.9 L26.5 220.1 L34.4 219.7 Z"/><rect x="36.5" y="226.0" width="11.6" height="5.9" rx="2.5"/><path d="M36.5 226.6 L25.8 230.7 L28.4 231.9 L36.5 231.6 Z"/><path d="M31 232c7-1 13 2 15 8 2 7-1 14-7 18-4 3-9 3-13 1-3-2-4-6-2-9l3-5c1-2 2-5 1-7z"/><path d="M24 258c4 3 9 4 13 2 2-1 4 1 3 3-2 4-7 6-12 5-4-1-7-4-7-8 0-2 2-3 3-2z"/></svg>`;
+const LOTUS=`<svg width="46" height="46" viewBox="0 0 120 120" fill="var(--accent)" aria-hidden="true">
+ <!-- hair bun -->
+ <ellipse cx="60" cy="17" rx="8" ry="7"/>
+ <!-- head -->
+ <ellipse cx="60" cy="34" rx="13.5" ry="15"/>
+ <!-- neck -->
+ <rect x="54" y="45" width="12" height="9" rx="4"/>
+ <!-- torso: shoulders taper to waist -->
+ <path d="M60 50c10 0 19 5 22 14l5 20c1 5-2 9-7 9H40c-5 0-8-4-7-9l5-20c3-9 12-14 22-14z"/>
+ <!-- arms resting to knees -->
+ <path d="M37 66c-7 3-12 9-14 17l-3 12c-1 4 2 7 6 6l8-2 3-12 6-16z"/>
+ <path d="M83 66c7 3 12 9 14 17l3 12c1 4-2 7-6 6l-8-2-3-12-6-16z"/>
+ <!-- hands, mudra -->
+ <path d="M17 92c-4-1-8 0-11 3-2 2-1 4 1 4l6 1 3 4c2 2 5 1 6-1l2-5z"/>
+ <path d="M103 92c4-1 8 0 11 3 2 2 1 4-1 4l-6 1-3 4c-2 2-5 1-6-1l-2-5z"/>
+ <!-- crossed legs base -->
+ <ellipse cx="60" cy="97" rx="45" ry="16"/>
+ <!-- feet tucked -->
+ <path d="M46 89c5-4 12-6 19-6s14 2 19 6c2 2 1 5-2 5H48c-3 0-4-3-2-5z"/>
+ <!-- lower base -->
+ <path d="M60 108c9 0 17 2 22 5 2 1 1 4-2 4H40c-3 0-4-3-2-4 5-3 13-5 22-5z"/>
+</svg>`;
+
+
+
+
+
+
+
+/* ---------- spine graphics ---------- */
+const SPINE_ICON=(w=22,h=54,op=1)=>`<svg width="${w}" height="${h}" viewBox="0 0 22 54" fill="none" style="opacity:${op}">
+<path d="M11 2v50" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round"/>
+${[6,13,20,27,34,41,48].map((y,i)=>{const r=3.1+i*0.28;return `<rect x="${11-r}" y="${y-2.1}" width="${r*2}" height="4.2" rx="1.6" fill="var(--accent)"/>`}).join("")}
+</svg>`;
+
+const SPINE_VERT=`<svg class="vert" width="9" height="9" viewBox="0 0 10 10" fill="none">
+<rect x="1" y="3" width="8" height="4" rx="1.6" fill="var(--accent)"/></svg>`;
+
+const SPINE_WIDE=`<svg width="120" height="16" viewBox="0 0 120 16" fill="none">
+<path d="M4 8h112" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" stroke-dasharray="1 5"/>
+<rect x="52" y="4.5" width="7" height="7" rx="2" fill="var(--accent)"/>
+<rect x="62" y="5.5" width="6" height="5" rx="1.8" fill="var(--accent)"/>
+<rect x="43" y="5.5" width="6" height="5" rx="1.8" fill="var(--accent)"/></svg>`;
+
+const SPINE_DISC=`<svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+<rect x="6" y="4" width="18" height="6" rx="2.4" fill="var(--accent)" opacity=".9"/>
+<rect x="5" y="12" width="20" height="6" rx="2.6" fill="var(--accent)"/>
+<rect x="6" y="20" width="18" height="6" rx="2.4" fill="var(--accent)" opacity=".9"/></svg>`;
+
+
+/* ================= PHASE III PROGRAM DATA ================= */
+const WEEKS=["1","2","3","4","5","6","7"];
+const WEEK_PHASE=["Learn","Learn","Build","Build","Peak","Peak","Deload"];
+
+/* automatic deload: roughly half the sets */
+function dl(rx){
+  let m=rx.match(/^(\d+) (×|rd:)(.*)$/);
+  if(m){ const n=Math.max(1,Math.round(parseInt(m[1])/2)); return n+" "+m[2]+m[3]; }
+  m=rx.match(/^(\d+) rounds?$/);
+  if(m){ const n=Math.max(1,Math.round(parseInt(m[1])/2)); return n+(n===1?" round":" rounds"); }
+  return rx;
+}
+/* X(id,name,dose,cue,{p:[wk1-2,wk3-4,wk5-6], dl:"deload", flat:true}) */
+function X(id,nm,rx,cue,o){ o=o||{};
+  const p=o.p||[rx,rx,rx];
+  const d=(o.dl!==undefined)?o.dl:(o.flat?rx:dl(rx));
+  return {id:id,nm:nm,w:[p[0],p[0],p[1],p[1],p[2],p[2],d],cue:cue||""};
+}
+const F=(id,nm,rx,cue)=>X(id,nm,rx,cue,{flat:true});
+const B=(h,items)=>({h:h,items:items});
+
+/* ---------- PREHAB (identical every lift day, no deload cut) ---------- */
+const PREHAB=[
+ B("Circuit A · Activation + mobility",[
+  F("P1","Banded Superman Scap Retraction","2 × 12","Prone, chest barely off the floor. Squeeze the blades — extension through the upper back only"),
+  F("P2","Cat-Cow","2 × 10","Gentle range, don't force the ends"),
+  F("P3","Thoracic Rotation — prone/supine","4 × 10","2 sets each position. Rotation from the mid-back — hips stacked and still")]),
+ B("Circuit B · Core + posterior",[
+  F("P4","Weighted Reverse Plank on Yoga Ball","2 × 30–45s","Plate across the hips, start 10–25 lb. Straight line — no sagging, no overarching"),
+  F("P5","Overhead Band Hamstring Walkout","2 × 6","Ribs down, hips level — walk out only as far as the hips stay up without arching"),
+  F("P6","Yoga Ball Leg Extension","2 × 8 ea leg","Low back flat throughout")]),
+ B("Circuit C · Glute + hip",[
+  F("P7","Thoracic Rotation Side Plank Clamshell","2 × 12 ea","Clam the top knee, then reach up and thread under. Rotation from the mid-back — hips stay stacked"),
+  F("P8","Side Plank Leg Lift (unweighted)","2 × 10 ea","Hips stacked and up, toe forward. Run it right after P7 before switching sides"),
+  F("P9","Lateral Banded Walks","2 × 10 ea way","Stay low, toes forward")]),
+ B("Circuit D · Finish",[
+  F("P10","Weighted Body Fold (10 lb)","2 × 10","Slow and controlled, no bouncing. Stop short of anything that travels into the leg. 10 lb is the ceiling"),
+  F("P11","4-Way Bear Crawl","2 rd × 6 steps ea way","Knees hovering, back flat, opposite hand and foot together. Hips don't rock or pike"),
+  F("P12","Yoga Ball Rotations","2 × 8 ea side","Upper back on the ball, hips bridged level. Turn from the upper back — hips stay up and square")])
+];
+
+/* ---------- REHAB (identical every lift day, no deload cut) ---------- */
+const REHAB=[
+ B("Block 1 · Nerve health",[
+  F("R1","Sciatic Nerve Flossing","2 × 15","Gentle glides — never into sharp or spreading symptoms"),
+  F("R2","Seated Nerve Glide","2 × 15 ea","Extend the knee, dorsiflex, tuck the chin, reverse. Smooth and rhythmic"),
+  F("R3","4-Way Supine Active Hamstring","2 × 10 ea direction","Straight, across, out, ankle flexed. Both hips stay flat — especially on the across position")]),
+ B("Block 2 · Lengthen",[
+  F("R4","Weighted Hip Flexor Stretch","2 × 30s ea","Half-kneeling. Tuck the pelvis and squeeze the back glute BEFORE adding weight"),
+  F("R5","TRX Achilles / Calf Stretch","2 × 30s ea","Straight knee for gastroc, bent knee for soleus"),
+  F("R6","Frog Stretch","2 × 30s","Knees wide, rock the hips back gently. Brace lightly so the low back doesn't sag")]),
+ B("Block 3 · Decompress + down-regulate",[
+  F("R7","Child's Pose — 3 directions","30s ea direction","Center, then walk both hands left, then right. A side stretch, not a twist"),
+  F("R8","Reverse Back Ext. Decompression + Rotation w/ Neck Pull","2 × 30s","Gentle traction only — never a yank on the neck. Keep any rotation small and slow. Stop if anything sharpens"),
+  F("R9","Qi Gong","3 min","Standing, slow, breath-led. Upright forms only — the last thing you do")])
+];
+
+/* ---------- LIFT DAYS ---------- */
+const DAYS={
+ mon:{label:"Monday",tag:"Upper Power + Heavy Bench",stress:"HIGH",sauna:true,segs:["prehab","lift","rehab"],
+  flow:"10' incline walk → Prehab → Lift (ends with bike) → Rehab → 5' flat walk → Sauna 20'",
+  note:"Heavy bench pairs with non-pressing work only — keep it that way. Range is the guardrail, reps-in-reserve is the rule.",
+  lift:[
+   B("Block 2 · Upper power — full rest",[
+    X("2A","Standing MB Chest Pass + 3 Lateral","4 × 6 + 3 ea","Heavy throws, then 3 light laterals each side. Pivot the back foot — hips turn, not the spine"),
+    X("2B","Drop Plyo Push-Up","4 × 4","Hands on low boxes, drop to the floor, catch with bent elbows and explode back up. Hips never sag",{p:["4 × 4","4 × 4","4 × 5"]}),
+    X("2C","Archer Push-Up","2 × 8 ea","Wide hands, shift over one arm, other stays straight")]),
+   B("Block 3 · Bench — rest ~90s",[
+    X("3A","Banded Bench Press","4 × 4 · 225–245 + bands","PLACEHOLDER RANGE — reset from your Phase 2 numbers. Bands add load at the top. Stop each set with 2 in the tank; bar slows = set is done",
+      {p:["4 × 4 · 225–245 + bands","4 × 4 · 230–250 + bands","5 × 3 · 235–260 + bands"],dl:"2 × 4 · 165–180 + light bands"}),
+    X("3B","Lat Pulldown","3 × 10","Tall chest, no lean-back heaving. Pulling between bench sets costs the press nothing"),
+    X("3C","Light KB RDL + Press","3 × 8","VERY light. Flat back on the hinge, ribs down on the press. First thing to cut if bench stalls")]),
+   B("Block 4 · KB power + traps",[
+    X("4A","KB Complex: Snatch + Press","3 × 4 ea","Hinge, don't squat. Ribs down at lockout — flared ribs means the set is over"),
+    X("4B","Banded Pallof Press with Plate","3 × 8 ea side","Resist the pull — nothing rotates. Ribs down"),
+    X("4C","Cable Shrug","3 × 12","Low pulley, 2-ct squeeze. Forward angle = far less compression")]),
+   B("Block 5 · Press + core",[
+    X("5A","Rotational Landmine Press (slow)","3 × 8 ea, 3s each way","Slow arc. Pivot the back foot so the hips turn with the bar — not the lumbar spine"),
+    X("5B","Renegade Push-Up Row","3 rd: 12 pu + 6 row ea","KBs 50 lb or lighter. 1 push-up → row L → push-up → row R. Deficit off the bells. Feet wide, hips do NOT rotate"),
+    X("5C","Weighted Kneeling Cable Crunch","3 × 10","LIGHT. Ribs to pelvis with the abs — don't sit the hips back onto the heels. Repeated loaded flexion, so keep it honest")]),
+   B("Block 6 · Neck + posterior",[
+    X("6A","Neck Circuit","2 rounds","Lying/supported, slow. No bridges"),
+    X("6B","Jefferson Curl","2 × 8 · 5–10 lb","Light and slow, one segment at a time, standing on the floor. Needs PT sign-off. Stop short of anything traveling into the leg"),
+    X("6C","45° Back Extension, 3-way","2 × 8 ea direction · 25 lb + 10s hold","Straight reps are the main lift; angled reps smaller. Rise to body level only. 10s hold on the last rep each direction")]),
+   B("Block 7 · Conditioning — assault bike",[
+    X("7A","Assault Bike Sprints","10 × 8s all-out / 35s off","True max effort each sprint from a standstill; easy spin between. Sit tall, hips back, no slouching into the handles")])
+  ]},
+
+ tue:{label:"Tuesday",tag:"KB Skill + Pull + Legs",stress:"LOW",sauna:false,segs:["prehab","lift","rehab"],
+  flow:"10' incline walk → Prehab → Lift (ends with heavy bag) → Rehab → 5' flat walk",
+  note:"Low day: tempo, technique and skill. Nothing here should feel heavy — Wednesday's plyos come next.",
+  lift:[
+   B("Block 2 · KB skill — full rest, crisp reps",[
+    X("2A","Turkish Get-Up","3 × 2 ea","Start with a shoe on your fist for week 1–2, then a light bell. Stop if the low back guards"),
+    X("2B","KB Halo","2 × 6 ea direction","Ribs down — no arching to clear the face"),
+    X("2C","Bottoms-Up KB Carry","3 × 30s ea","Wrist stacked, bell upside down, walk tall")]),
+   B("Block 3 · Pull superset — rest ~90s",[
+    X("3A","Chest-Supported Row","4 × 8","Chest on the pad — the machine holds your spine. 1–2 in the tank"),
+    X("3B","Single-Leg Box Squat, 3s lowering","3 × 6 ea","Right first. Hips back, tap the box under control"),
+    X("3C","Face Pull","3 × 15","Light and high-rep — posture work, not a strength lift")]),
+   B("Block 4 · Legs + carry",[
+    X("4A","Machine Leg Extension","3 × 10 ea","Right first. Controlled both directions"),
+    X("4B","Machine Hamstring Leg Curl","3 × 10 ea","Right first. Hips stay down on the pad"),
+    X("4C","Single-Arm Suitcase Carry","3 × 30s ea","Right first. Walk tall — any lean means it's too heavy")]),
+   B("Block 5 · Calf / tib / hips",[
+    X("5A","SL Calf Raise + Tib Raise","3 × 8 ea + 3ct / 15","Right first. 3-count squeeze at the top. Supersetted pair",
+      {p:["3 × 8 ea + 3ct / 15","3 × 10 ea + 3ct / 18","4 × 8 ea + 3ct / 20"]}),
+    X("5B","Banded Hip Flexor March","2 × 12 ea","Tall, ribs down, knee to hip height or above"),
+    X("5C","Inner Leg Extension","2 × 20","Controlled both directions")]),
+   B("Block 6 · Forearms + posterior",[
+    X("6A","Seated DB Wrist Curls","2 × 15","Forearms on knees, full roll"),
+    X("6B","Seated Reverse Wrist Curls","2 × 15","Lighter — protects the elbows"),
+    X("6C","Reverse Back Extension, 3-way","2 × 8 · 25 lb + 5s hold","Legs sweep from the hips. Angled reps smaller. If Wednesday's plyos feel flat or morning stiffness creeps up, cut this first")]),
+   B("Block 7 · Conditioning — heavy bag",[
+    X("7A","Heavy Bag","4 × 2 min / 1 min rest","Technical rounds at 60–70%. Straights (jab, cross) only for the first weeks. Pivot the back foot. End the round when your hips stop turning and your back starts. Follows the reverse back extension. Needs PT yes")])
+  ]},
+
+ wed:{label:"Wednesday",tag:"Lower Power + Single-Leg Landing",stress:"HIGH",sauna:false,segs:["prehab","lift","rehab"],
+  flow:"10' incline walk → Prehab → Lift (ends with bike) → Rehab → 5' flat walk",
+  note:"Highest-impact day. Quiet landings, right leg first on every single-leg set, and the left never does more than the right completes. Bike sprints close the day — seated and low-impact.",
+  lift:[
+   B("Block 2 · Skips + plyo + landing — full rest, quiet reps",[
+    X("2A","A-Skips","3 × 15 yd","Knee up, toe up, tall posture. Quiet contacts"),
+    X("2B","B-Skips","3 × 15 yd","A-skip plus the paw-back — hamstring pulls through under control"),
+    X("2C","Low Box Jump, step down","3 × 3","12\" box or lower. Jump up, STEP down"),
+    X("2D","Single-Leg Drop-to-Stick","3 × 3 ea","Right first. Off a 4–6\" step, land on one leg and hold 3 seconds. Needs PT yes"),
+    X("2E","Lateral Bound to Stick","3 × 4 ea","Stick each landing before the next. Knee stays over the foot"),
+    X("2F","Side-to-Side SL Pogo","3 × 10 ea","Low amplitude, ankles only, tall and quiet")]),
+   B("Block 3 · Single-leg strength — rest ~90s",[
+    X("3A","Elevated Split Squat + Rotation, DB in elbow crease","4 × 6 ea","Right first. Rotate the chest toward the front knee at the bottom — from the MID-back, hips square. If the pelvis turns, the rep is over"),
+    X("3B","Nordic Curl","3 × 4","Hips locked, break at the knees only. Band assist the moment form cracks"),
+    X("3C","Short-Lever Copenhagen","3 × 8 ea","Adductor + lateral core")]),
+   B("Block 4 · KB power + glute",[
+    X("4A","Double KB Clean","3 × 5","Start lighter than a single clean. Hinge, don't squat; catch with ribs down — no leaning back"),
+    X("4B","Landmine Skater Squat","3 × 6 ea","Right first. Landmine as counterweight — reach and tap"),
+    X("4C","Bilateral Hip Thrust","3 × 8","Stop at neutral, ribs down. No arching over the top")]),
+   B("Block 5 · Single-leg quad + calf",[
+    X("5A","Belt Split Squat","3 × 8 ea","Right first. Spine unloaded — the legs do all the work"),
+    X("5B","Seated SL Calf Raise + Tib Raise","3 × 10 ea + 3ct / 15","Right first. Soleus then anterior tib",
+      {p:["3 × 10 ea + 3ct / 15","3 × 12 ea + 3ct / 18","4 × 10 ea + 3ct / 20"]})]),
+   B("Block 6 · Hips + posterior",[
+    X("6A","Banded Hip Flexor March, supine","2 × 12 ea","Low back flat, ribs down"),
+    X("6B","Weighted Reverse Squat","3 × 15","Plate on the chest, band over the feet. Low back stays flat to the floor the whole set — arching to finish means lighten up"),
+    X("6C","Banded Hamstring Kicks","2 × 15 ea","Move from the hip and knee, ribs down, pelvis still")]),
+   B("Block 7 · Neck + arms",[
+    X("7A","4-Way Weighted Neck, on bench","2 × 10 ea direction","5 lb plate or less. Slow, no jerking at end range. Rest of the body relaxed"),
+    X("7B","Cable Bicep Curl","2 × 12","Stand tall, ribs down — no rocking the hips"),
+    X("7C","Cable Tricep Pushdown","2 × 12","Ribs down, don't lean into it")]),
+   B("Block 8 · Conditioning — assault bike",[
+    X("8A","Assault Bike Sprints","10 × 8s all-out / 35s off","True max effort each sprint; easy spin between. Seated and low-impact after the plyo day. Sit tall, hips back, no slouching into the handles")])
+  ]},
+
+ thu:{label:"Thursday",tag:"Bench Volume + Back + Rotation",stress:"LOW*",sauna:false,segs:["prehab","lift","rehab"],
+  flow:"10' incline walk → Prehab → Lift (ends with heavy bag) → Rehab → 5' flat walk",
+  note:"*Low on load, high on rotation (punch, landmine rotation, mace, bag). Friday-morning stiffness is your check on this stack. If it's up, cut the mace first, then the landmine rotation, then shorten the bag.",
+  lift:[
+   B("Block 2 · Bench volume + pull — rest ~90s",[
+    X("2A","Paused Barbell Bench (2-ct)","4 × 6 · 205–225","PLACEHOLDER RANGE — reset from your Phase 2 numbers. Warm up first: band pull-aparts 2 × 15 + an empty-bar set. Stop with ~3 in the tank",
+      {p:["4 × 6 · 205–225","4 × 5 · 210–235","5 × 4 · 220–245"],dl:"2 × 5 · 155–175"}),
+    X("2B","Pull-Ups — vary grip","4 × 6","Full dead hang between reps"),
+    X("2C","Rotating Plank (R/M/L)","2 × 45s","Move between positions slowly — no fast twisting")]),
+   B("Block 3 · Back + traps",[
+    X("3A","Half-Kneeling Single-Arm Cable Row","4 × 8 ea","Half-kneeling kills momentum and adds anti-rotation for free"),
+    X("3B","Incline DB Shrug","3 × 10","Chest on the incline bench, 2-ct squeeze at the top"),
+    X("3C","Weighted Rotation Punch","3 × 8 ea side","Pivot the back foot — hips and mid-back turn together. Light enough to stay fast")]),
+   B("Block 4 · Rear delt + carry + rotation",[
+    X("4A","Chest-Supported Rear Delt Raise","3 × 12","Chest supported — no bent-over free-standing versions"),
+    X("4B","Double KB Front-Rack Carry","3 × 45s","Ribs down, no leaning back to hold the bells up"),
+    X("4C","Landmine Trunk Rotation, slow","3 × 8 ea side","Slow arc, feet turn under you and the hips follow the bar. The arms don't swing it")]),
+   B("Block 5 · Forearms + pull + mace",[
+    X("5A","Wrist Curl + Reverse Wrist Curl","2 × 15 ea","Seated and supported"),
+    X("5B","Single-Arm DB Row, bench-supported","3 × 8 ea","Flat back, bench-supported"),
+    X("5C","Mace Scoops","3 × 6 ea side","Start 10 lb or lighter. A mace is a long lever — a little weight puts a lot of twist on the spine. Stay tall, pivot the hips")]),
+   B("Block 6 · Posterior + hips",[
+    X("6A","Jefferson Curl","2 × 8 · 5–10 lb","Light and slow. Extension follows immediately. Needs PT sign-off"),
+    X("6B","45° Back Extension, 3-way","2 × 8 ea direction · bodyweight + 10s hold","Straight reps are the main lift; angled reps smaller. If Friday-morning stiffness is up, cut this first"),
+    X("6C","Banded Hip Flexor March","2 × 12 ea","Tall, ribs down, knee to hip height or above"),
+    X("6D","Inner Leg Extension","2 × 20","Controlled both directions")]),
+   B("Block 7 · Conditioning — heavy bag",[
+    X("7A","Heavy Bag","4 × 2 min / 1 min rest","Straights only for the first weeks. Pivot the back foot. End the round when your hips stop turning and your back starts. Your most rotation-heavy day and it follows the Jefferson curl — drop to 3 rounds if Friday stiffness is up. Needs PT yes")])
+  ]},
+
+ fri:{label:"Friday",tag:"Hinge + Squat + Olympic",stress:"HIGH",sauna:true,segs:["prehab","lift","rehab"],
+  flow:"10' incline walk → Prehab → Lift → Rehab → 5' flat walk → Sauna 20'",
+  note:"No conditioning today so you're fresher for TAT. Still the longest lift of the week. Trim order on a tight morning: arms + neck, then the barbell lifts, then the plyos. If your back is stiff: cut 5A, then 5C, then the barbell snatch.",
+  lift:[
+   B("Block 2 · Hinge prep + power — full rest, crisp reps",[
+    X("2A","SL RDL Iso Hold","2 × 30s ea","Right first. Back flat, hips square — hold where the back stays quiet"),
+    X("2B","Weighted Pull-Through","2 × 10","Cable. Brace, hips back, snap to a tall finish. Grooves the hinge"),
+    X("2C","Dead-Stop KB Swing","3 × 6","Brace hard, hard glute and hip lockout — the top is a standing plank, not a lean-back. Each rep resets on the floor"),
+    X("2D","Lateral Stance Box Jump Switches","3 × 3","Low box (12\" or less). Jump up side-on, step down, switch sides. Stop on any loud landing"),
+    X("2E","Bilateral Pogo","3 × 10","Low amplitude, ankles only, tall and quiet")]),
+   B("Block 3 · Squat + snatch — rest ~90s",[
+    X("3A","Belt Squat","3 × 8","Spine unloaded — all legs. Stay tall"),
+    X("3B","KB Snatch","3 × 4 ea arm","Ribs down at lockout — if they flare, the set is over"),
+    X("3C","Long-Lever Copenhagen","3 × 20s ea","One straight line from head to ankle")]),
+   B("Block 4 · Sled + calf",[
+    X("4A","Sled Drag","2 × 20 yd","Backward drag — quad work, zero eccentric",{p:["2 × 20 yd","3 × 20 yd","3 × 25 yd"]}),
+    X("4B","Sled Push","2 × 20 yd","Forward push — posterior chain and calves",{p:["2 × 20 yd","3 × 20 yd","3 × 25 yd"]}),
+    X("4C","Standing SL Calf Raise + Tibialis Raise","4 × 6 ea + 3ct / 15","Right first. 3-count squeeze. Supersetted pair",
+      {p:["4 × 6 ea + 3ct / 15","4 × 6 ea + 3ct / 18","4 × 8 ea + 3ct / 20"]})]),
+   B("Block 5 · Posterior + hips + core",[
+    X("5A","Reverse Back Extension, 3-way","3 × 8 · 5s hold","Legs sweep from the hips. Angled reps smaller. Stop if the low back guards"),
+    X("5B","Banded Hip Flexor March","2 × 12 ea","Tall, ribs down, knee to hip height or above"),
+    X("5C","Weighted Cable Crunch","3 × 10","LIGHT. Ribs to pelvis with the abs — hips don't sit back onto the heels")]),
+   B("Block 6 · Plyos + Olympic lifts",[
+    X("6A","Low Box SL Jump, step down","2 × 6 ea","Right first. 12\" or lower, STEP down. Stop a leg's set at the first loud landing or inward knee. Needs PT yes"),
+    X("6B","Low Box Switches","2 × 20 ea","Quick and quiet. Stop the set if landings get loud or posture leans back"),
+    X("6C","Light Barbell Power Clean","2 × 6","Light bar, from blocks. Ribs down at the catch. Quality reps only. Needs PT yes"),
+    X("6D","Light Barbell Snatch","2 × 6","Light bar. Rib flare at the catch means stop. Quality reps only. Needs PT yes")]),
+   B("Block 7 · Arms + neck",[
+    X("7A","DB Hammer Curl","3 × 10","Elbows tucked, no body english"),
+    X("7B","Overhead Rope Extension","3 × 12","Ribs down, don't arch to get the stretch"),
+    X("7C","4-Way Neck","2 × 10 ea direction","Slow, no jerking at end range. Bodyweight or hand resistance")])
+  ]},
+
+ sat:{label:"Saturday",tag:"TAT",stress:"",sauna:false,segs:["tat"],flow:"Training at TAT",lift:[]}
+};
+const TABS=[{id:"mon",nm:"Mon"},{id:"tue",nm:"Tue"},{id:"wed",nm:"Wed"},{id:"thu",nm:"Thu"},{id:"fri",nm:"Fri"},{id:"sat",nm:"Sat"},{id:"sun",nm:"Sun"},{id:"info",nm:"Info"}];
+const SEGNAMES={prehab:"Prehab",lift:"Lift",rehab:"Rehab",tat:"TAT"};
+/* ---------- block-level spine rules ---------- */
+const BLOCK_TIPS={
+ "Circuit A · Activation + mobility":"Gentle range only. Mobility, never a stretch you force into.",
+ "Circuit B · Core + posterior":"The spine stays still while the limbs move — that's the skill you're building.",
+ "Circuit C · Glute + hip":"Glutes that fire are the reason your low back doesn't have to.",
+ "Circuit D · Finish":"Finish in a braced, neutral spine — that's the state you want walking into your first set.",
+ "Block 1 · Nerve health":"Nerve work is gentle by definition. Glide it, never yank it.",
+ "Block 2 · Lengthen":"Pelvis tucked first, then stretch. Sensation in the low back means the stretch is going to the wrong place.",
+ "Block 3 · Decompress + down-regulate":"Leave calm and decompressed — you're about to sit in a car and then a chair.",
+
+ "Block 2 · Upper power — full rest":"Power first while you're fresh — a tired throw is a sloppy spine. Full rest between rounds.",
+ "Block 3 · Bench — rest ~90s":"Nothing that presses sits between bench sets. Feet flat, ribs down, hips glued.",
+ "Block 4 · KB power + traps":"Hinge and brace for the snatch. Ribs down at lockout.",
+ "Block 5 · Press + core":"Slow rotation on the landmine; on renegades the hips never turn. You're tired here — watch it.",
+ "Block 6 · Neck + posterior":"Extension follows the Jefferson curl on purpose. Keep the curl light and slow.",
+ "Block 7 · Conditioning — assault bike":"8-second sprints are true max effort. The 35s off is an easy spin, not standing still.",
+
+ "Block 2 · KB skill — full rest, crisp reps":"Skill, not strength. Light bells, crisp reps, stop before form fades.",
+ "Block 3 · Pull superset — rest ~90s":"Supported pulling — let the pad hold your posture.",
+ "Block 4 · Legs + carry":"Right leg first on every machine set. The carry is anti-lean, not just grip.",
+ "Block 5 · Calf / tib / hips":"Standing tall, controlled, right side first.",
+ "Block 6 · Forearms + posterior":"Seated grip work gives the spine a rest before the extension.",
+ "Block 7 · Conditioning — heavy bag":"Straights first. Pivot the back foot. It follows loaded back-extension work — end the round the moment the back starts doing the turning.",
+ "Block 8 · Conditioning — assault bike":"Seated and low-impact after the plyo day. Eight seconds only works as a true max effort.",
+
+ "Block 2 · Skips + plyo + landing — full rest, quiet reps":"Highest-impact block of the week. If you can hear the landing, it was too much force through your spine.",
+ "Block 3 · Single-leg strength — rest ~90s":"Right leg first, every set. The left only matches what the right completes.",
+ "Block 4 · KB power + glute":"Hinge, don't squat. Rib position at the catch is the safety check.",
+ "Block 5 · Single-leg quad + calf":"The belt takes the load off the spine — make the legs earn it.",
+ "Block 6 · Hips + posterior":"All low-load. Low back stays flat to the floor on the lying work.",
+ "Block 7 · Neck + arms":"Smallest muscles last. Cut this first on a tight morning.",
+
+ "Block 2 · Bench volume + pull — rest ~90s":"Volume day: stay below your best. Full dead hang between pull-ups — free decompression.",
+ "Block 3 · Back + traps":"Every row here is supported or half-kneeling. If you're swinging to move it, it's too heavy.",
+ "Block 4 · Rear delt + carry + rotation":"Rotation is slow and controlled. The moment it gets fast, the lumbar spine starts helping.",
+ "Block 5 · Forearms + pull + mace":"Mace is a long lever — go light and stay tall.",
+ "Block 6 · Posterior + hips":"Jefferson curl, then extension straight after. Friday's hinge work comes next — cut this first if you're stiff.",
+
+ "Block 2 · Hinge prep + power — full rest, crisp reps":"Iso, then pattern, then power — in that order. Never swing before you've grooved the hinge.",
+ "Block 3 · Squat + snatch — rest ~90s":"Belt squat is spine-free. Snatch only while the ribs stay down.",
+ "Block 4 · Sled + calf":"Sled is all push, no eccentric — the friendliest hard work you can do.",
+ "Block 5 · Posterior + hips + core":"Extension, then flexion — that's the pairing. Keep the crunch light.",
+ "Block 6 · Plyos + Olympic lifts":"Technical work late in a long session. Quality only — skip a set before you push through a sloppy one.",
+ "Block 7 · Arms + neck":"Small stuff. First to go on a tight morning."
+};
+
+/* ---------- per-exercise spine-safety tips (first match wins: specific → general) ---------- */
+const EX_TIPS_NEW=[
+ ["Thoracic Rotation Side Plank Clamshell","Hips stacked the whole time. If the pelvis follows the arm, the rotation moved into your lumbar spine — set's over."],
+ ["Side Plank Leg Lift","Hips stacked and up. Hips sag = set's over."],
+ ["Weighted Reverse Plank","Straight line, glutes squeezed. Either fault (sagging or over-arching) ends the set."],
+ ["Overhead Band Hamstring Walkout","Ribs down. Arms overhead flare the ribs — don't let it turn into a low-back arch."],
+ ["Weighted Body Fold","10 lb ceiling. Slow, no bouncing. Stop short of anything that travels into the leg."],
+ ["4-Way Bear Crawl","Knees an inch off the floor, back flat as a table. Hips don't rock or pike."],
+ ["Yoga Ball Rotations","Hips stay up and square. The turn comes from the upper back."],
+ ["Seated Nerve Glide","Smooth and rhythmic. If tingling spreads further down the leg, back off the range."],
+ ["4-Way Supine Active Hamstring","Both hips flat — especially on the across position, or it becomes lumbar rotation."],
+ ["Weighted Hip Flexor Stretch","Tuck the pelvis and squeeze the back glute before adding the weight."],
+ ["TRX Achilles","Straight knee for gastroc, bent knee for soleus — do both."],
+ ["Frog Stretch","Brace lightly. Rock back gently — don't let the low back sag."],
+ ["Child's Pose","Side reaches open the lats and the QL. A stretch, not a twist."],
+ ["Reverse Back Ext. Decompression","Gentle traction only. Never yank the neck. Keep rotation small."],
+ ["Qi Gong","Upright forms only. Slow, breath-led."],
+
+ ["Standing MB Chest Pass","Pivot the back foot on the laterals so the hips turn, not the lumbar spine."],
+ ["Drop Plyo Push-Up","Catch with bent elbows and a braced middle. Hips never sag on the landing."],
+ ["Banded Bench","Bands add load at the top. Bar speed is the referee. Hips down, feet flat, modest arch."],
+ ["Light KB RDL + Press","Very light. Flat back on the hinge, ribs down on the press."],
+ ["KB Complex","Hinge, don't squat. Ribs down at lockout — flare means stop."],
+ ["Banded Pallof","Resist the pull — nothing rotates. Ribs down."],
+ ["Rotational Landmine Press","Slow arc. Pivot the back foot — the hips turn with the bar, not the lumbar spine."],
+ ["Weighted Kneeling Cable Crunch","Light. Ribs to pelvis with the abs. Don't sit the hips back onto the heels."],
+ ["Jefferson Curl","Light, slow, one segment at a time. Extension work follows. Stop short of anything traveling into the leg."],
+ ["45° Back Extension, 3-way","Straight reps are the main lift. Angled reps smaller. Rise to body level only — no hyperextending."],
+ ["Assault Bike","Sit tall, hips back. True max effort for 8s, then an easy spin."],
+ ["Heavy Bag","Straights first. Pivot the back foot. End the round when the hips stop turning and the back starts."],
+
+ ["Chest-Supported Row","Chest stays on the pad — the machine holds your spine. No heaving."],
+ ["Turkish Get-Up","Start with a shoe on your fist. Eyes on the hand. Stop if the low back guards."],
+ ["KB Halo","Ribs down. Don't arch to clear your face."],
+ ["Bottoms-Up","Wrist stacked, bell upside down, walk tall."],
+ ["Single-Leg Box Squat","3-second lowering, hips back, tap the box under control."],
+ ["Machine Leg Extension","Right first. Controlled both directions."],
+ ["Machine Hamstring","Right first. Hips stay down on the pad."],
+ ["Single-Arm Suitcase","Right first. Walk tall. Any lean means it's too heavy."],
+ ["Reverse Back Extension, 3-way","Legs sweep from the hips. Angled reps smaller. Stop if the low back guards."],
+
+ ["A-Skips","Knee up, toe up, tall. Quiet contacts."],
+ ["B-Skips","A-skip plus the paw-back. Stay tall and quiet."],
+ ["Single-Leg Drop-to-Stick","Step off a low box, land on one leg, hold 3 seconds. Hips back, knee over the toes."],
+ ["Lateral Bound to Stick","Hold each landing before the next. Knee stays over the foot."],
+ ["Elevated Split Squat + Rotation","Rotate from the mid-back toward the front knee. Hips square — if the pelvis turns, the rep is over."],
+ ["Nordic","Hips locked, break at the knees only. Band assist the moment form cracks."],
+ ["Double KB Clean","Hinge, don't squat. Catch with ribs down — never lean back."],
+ ["Bilateral Hip Thrust","Stop at neutral, ribs down. The top inch is the risky one."],
+ ["Belt Split Squat","Spine unloaded — the legs do all the work."],
+ ["Weighted Reverse Squat","Low back flat to the floor. If it arches to finish, lighten up."],
+ ["Banded Hamstring Kicks","Move from the hip and knee. Ribs down, pelvis still."],
+ ["4-Way Weighted Neck","Light plate, slow, no jerking at end range. Rest of the body relaxed."],
+ ["Cable Bicep Curl","Stand tall, ribs down. No rocking the hips."],
+ ["Tricep Pushdown","Ribs down. Don't lean into it."],
+
+ ["Paused Barbell Bench","Hips stay down. The second they lift to help a rep, that rep is over."],
+ ["Weighted Rotation Punch","Pivot the back foot — hips and mid-back turn together. Light enough to stay fast."],
+ ["Landmine Trunk Rotation","Slow arc, feet turn under you. The arms don't swing it."],
+ ["Double KB Front-Rack","Ribs down. No leaning back to hold the bells up."],
+ ["Mace Scoops","Start 10 lb or lighter. Long lever, big twist. Stay tall, pivot the hips."],
+ ["Single-Arm DB Row","Bench-supported, flat back."],
+ ["Wrist Curl + Reverse","Seated and supported — a genuine rest for the spine."],
+
+ ["Dead-Stop KB Swing","Brace, hips snap, finish with a hard glute lockout. Never lean back."],
+ ["Weighted Pull-Through","Brace, hips back, snap tall. The back never rounds."],
+ ["Lateral Stance Box Jump","Low box. Jump up, step down, switch. Stop on any loud landing."],
+ ["Belt Squat","Spine unloaded — all legs. Stay tall."],
+ ["KB Snatch","Ribs down at lockout. Stop the set if they flare."],
+ ["Low Box SL Jump","Right first, step down. Stop the leg's set at a loud landing or inward knee."],
+ ["Low Box Switches","Quick and quiet. Stop if landings get loud or posture leans back."],
+ ["Barbell Power Clean","Light bar, from blocks. Ribs down at the catch. Quality reps only."],
+ ["Barbell Snatch","Light bar. Rib flare at the catch means stop. Quality reps only."],
+ ["Weighted Cable Crunch","Light. Ribs to pelvis with the abs."],
+ ["4-Way Neck","Slow, no jerking at end range."],
+ ["Standing SL Calf Raise","Full range, 3-count squeeze. Right leg leads every set."]
+];
+
+const EX_TIPS_OLD=[
+ ["Barbell Bench","Hips stay down. The second they lift to help a rep, that rep is over."],
+ ["Renegade","Feet as wide as you can get them. Hips rotating = stop the set."],
+ ["KB RDL","Back flat beats going deeper. Every time."],
+ ["Chest Pass","Pivot the back foot on laterals so the hips turn, not the lumbar spine."],
+ ["Archer Push-Up","Hips level — no sagging or piking as you shift."],
+ ["Plyo Push-Up","Land with bent elbows and a braced middle. Quiet means safe."],
+ ["Cable Chest Fly","Stand tall, ribs down. Don't lean into the stretch."],
+ ["Lat Pulldown","No lean-back heaving. If you're rocking, drop the pin."],
+ ["Cable Shrug","Straight up and down. Shrugs never involve the low back."],
+ ["Overhead Cable","Ribs down — overhead is where lumbar extension sneaks in."],
+ ["Landmine Press","Half-kneeling on purpose: it takes your spine out of the lift."],
+ ["Box Jump","Jump up, STEP down. Never jump off the box this phase."],
+ ["Snap Down","Land in a quarter squat, hips back, chest up. Freeze it."],
+ ["SL RDL Iso","Hold where the back stays flat, not where the range ends."],
+ ["Pogo","Ankles only, minimal knee bend, tall posture. Small is the point."],
+ ["Skater Squat","Hips back and torso tall. Counterweight helps you stay upright."],
+ ["Split Squat","Load in the hands, never on the spine. Torso vertical."],
+ ["Slider Leg Curl","Hips stay up the whole set — the drop is where the back takes over."],
+ ["Banded Reverse Squat","Low back pressed flat. If it arches off the floor, shorten the range or lighten the band."],
+ ["Landmine RDL","Fixed arc makes a flat back easier. Use it, don't fight it."],
+ ["Side Plank Row","Hips never rotate. That resistance IS the exercise."],
+ ["Hip Thrust","Stop at neutral, ribs down. The top inch is the risky one."],
+ ["Copenhagen","Adductors and lateral core — keep the body in one straight line."],
+ ["Lateral Lunge","Push the hips back, chest up. Don't fold forward over the knee."],
+ ["Calf Raise","Full range, controlled. Right leg leads every set."],
+ ["Tibialis Raise","Slow both directions. Back stays flat on the wall."],
+ ["Hip Flexor March","Tall, ribs down. Leaning back to get the knee higher defeats it."],
+ ["Neck Circuit","Lying or supported, slow tempo. No wrestler bridges."],
+ ["Pull-Up","Full dead hang between reps — free decompression."],
+ ["McGill Curl-Up","Hands under the arch. If the low back flattens, it's a crunch."],
+ ["Cable Row","Half-kneeling kills momentum and adds anti-rotation for free."],
+ ["Incline DB Shrug","Chest supported so the load never routes through your spine."],
+ ["Face Pull","Light and high-rep. Posture work, not a strength lift."],
+ ["Rear Delt","Chest supported. No bent-over free-standing versions."],
+ ["Suitcase Carry","Walk tall. Any lean sideways and the weight is too heavy."],
+ ["Rotating Plank","Move between positions slowly — no fast twisting."],
+ ["Body Saw","Small range first. Stop before the low back wants to arch."],
+ ["Kettlebell Swing","Hips snap, arms are rope. Finish tall — never lean back."],
+ ["Trap-Bar Deadlift","Brace before every rep. Reps cap the weight for you."],
+ ["Superman Scap","Upper back only. Low back stays neutral, chest barely leaves the floor."],
+ ["Sled","No eccentric, no impact. The safest hard work in your program."],
+ ["Back Raise","Body-level only. Hips drifting up ends the set."],
+ ["Reverse Hyper","Strict, small range, no swing. Swinging is how this one bites."],
+ ["Wrist Curl","Seated and supported — a genuine rest for your spine."],
+ ["Cat-Cow","Gentle both directions. Never force the ends."],
+ ["Cobra","Hips stay down. Back off if anything sharpens."],
+ ["Lumbar Rotation","Small pain-free arc. Rotation is the direction discs like least."],
+ ["Reverse Plank","Glutes squeezed, straight line. Sagging hips end the set."],
+ ["Bird Dog","Hips level — a hip that drops is a spine that rotates."],
+ ["Yoga Ball Leg Extension","Low back flat to the floor the entire time."],
+ ["Clamshell","Hold the plank, rep the clam. Don't roll backward."],
+ ["Fire Hydrant","Hips square, no trunk twist."],
+ ["Banded Walk","Stay low, toes forward, constant tension."],
+ ["Nerve Flossing","Gentle glides. Never into sharp or spreading symptoms."],
+ ["Hamstring Stretch","Active, not cranked. Keep the low back on the floor."],
+ ["Dead Bug","Low back glued down. Shorten the reach if it lifts."],
+ ["Hip Switches","Tall spine, movement comes from the hips."],
+ ["Ground Hip Thrust","Heels drive, squeeze at the top, stop at neutral."],
+ ["Sprint Intervals","Feet never touch. Zero impact, maximum intent."],
+ ["Kick Bursts","Torso high and held. Core does the holding, not the low back."],
+ ["Jump Squat","Explode up, land soft. Depth is the dial."],
+ ["Lunge Jump","Torso tall, quiet landings. No crashing into the bottom."],
+ ["Lateral Bound","Stick each landing before the next."],
+ ["A-Skip","Knee up, toe up, tall. Water keeps the mechanics honest."],
+ ["B-Skip","Paw back actively — hamstring lengthens then pulls through."],
+ ["Walking Lunge","Right leg first. Torso tall, controlled descent."],
+ ["Bodyweight Squat","Chest up, spine neutral — same rules as loaded."],
+ ["Straight Laps","Steady effort, freestyle or backstroke."],
+ ["Open Stretch","Gentle. No forced end range, no deep flexion or rotation."],
+ ["Seated Hip Flexion","Spine vertical. Leaning back to cheat height defeats it."],
+ ["Inner Leg Extension","Controlled both directions."],
+ ["Banded 90/90 Row","Squeeze the blades, ribs stay down."],
+ ["Banded Pull-Through","Brace, hips back, snap tall. Back never rounds."],
+ ["Easy Laps","Loosen the shoulders and hips before anything hard."],
+ ["Hollow Body","Low back pressed flat. Bend the knees to keep it flat."],
+ ["Hanging Knee Raise","Curl the pelvis, don't just lift the knees. Zero swing — momentum arches the low back."],
+ ["Y-Raise","Light weight only. This is posture work."],
+ ["Bicep Curl","Stand tall — no swinging from the hips."],
+ ["Hammer Curl","Elbows tucked, no body english."],
+ ["Rope Extension","Ribs down, don't arch to get the stretch."],
+ ["DB Extension","Lying = zero spinal load. Keep it that way."],
+ ["Stir-the-Pot","Torso frozen. All the movement comes from the arms."],
+ ["Ab Wheel","Short range, pelvis tucked. Back talks = swap to plank walkouts."],
+ ["Prone ISO Hamstring","Max effort holds. Hips stay down."],
+ ["Side Plank","One straight line from ear to ankle."]
+];
+const EX_TIPS=EX_TIPS_NEW.concat(EX_TIPS_OLD);
+function tipFor(nm){ for(const [k,v] of EX_TIPS){ if(nm.indexOf(k)>-1) return v; } return null; }
+const CUES={
+ prehab:["Discs are swollen and stiffest in the morning. This block is what earns you the right to load.",
+         "Move the spine gently here so it doesn't have to move under load later.",
+         "Glutes that fire are the reason your low back doesn't have to."],
+ lift:["Neutral spine every rep. The set ends when position goes, not when the reps run out.",
+       "Load in the hands, not on the spine. That's the whole design of this program.",
+       "Right leg first. The left only matches what the right completes — never more.",
+       "Quiet landings. If you can hear it, that was too much force through your spine.",
+       "Brace before the rep, not during it. The brace is the exercise.",
+       "A weight you can't control isn't strength, it's a bet against your disc."],
+ rehab:["Loaded work builds it; this block is what lets you come back and do it again tomorrow.",
+        "Nerve work is gentle by definition. Glide it, never yank it.",
+        "Finish upright and moving — it's the last thing your spine gets before a day of sitting."],
+ pool:["Water strips the compression and keeps the intent. Best place to be explosive right now.",
+       "Depth is the dial. Deeper water, less load through the spine.",
+       "Buoyancy handles your bodyweight so your disc doesn't have to."],
+ tat:["Bring your numbers and how the back has felt. Specific reports get things unlocked sooner."]
+};
+function cueFor(s){const a=CUES[s]||CUES.lift;const d=new Date();return a[(d.getDate()+d.getMonth())%a.length];}
+
+/* ---------- state + storage (Claude storage in chat, phone localStorage when hosted) ---------- */
+let week=0, day="mon", seg="lift", done={};
+const todayKey=new Date().toISOString().slice(0,10);
+const hasClaudeStore=typeof window!=="undefined" && !!window.storage;
+async function stGet(k){ if(hasClaudeStore){try{const r=await window.storage.get(k);return r?r.value:null;}catch(e){return null;}}
+  try{return localStorage.getItem(k);}catch(e){return null;} }
+async function stSet(k,v){ if(hasClaudeStore){try{await window.storage.set(k,v);}catch(e){} return;}
+  try{localStorage.setItem(k,v);}catch(e){} }
+async function loadState(){
+  const w=await stGet("p3-week"); if(w!==null&&w!==undefined) week=Math.min(6,Math.max(0,parseInt(w)||0));
+  const d=await stGet("p3-done-"+todayKey); if(d){try{done=JSON.parse(d)||{};}catch(e){done={};}}
+}
+function saveWeek(){ stSet("p3-week",String(week)); }
+function saveDone(){ stSet("p3-done-"+todayKey,JSON.stringify(done)); }
+const $=id=>document.getElementById(id);
+
+function segData(){
+  if(seg==="prehab") return PREHAB;
+  if(seg==="rehab") return REHAB;
+  if(seg==="lift") return DAYS[day].lift;
+  return null;
+}
+function renderWeeks(){
+  $("weeks").innerHTML=WEEKS.map((l,i)=>`<button class="wk ${i===week?'active':''}" onclick="setWeek(${i})">${l}</button>`).join("");
+  $("phaseLbl").innerHTML=`<b>${WEEK_PHASE[week]}</b> · week ${week+1} of 7`+(week===6?" · half the sets, ~20% lighter":"");
+}
+function renderTabs(){
+  $("tabs").innerHTML=TABS.map(t=>`<button class="tab ${t.id===day?'active':''}" onclick="setDay('${t.id}')">${t.nm}</button>`).join("");
+}
+function exCard(item){
+  const k=day+"-"+seg+"-"+item.id, isDone=!!done[k], tip=tipFor(item.nm);
+  return `<div class="ex ${isDone?'done':''}" data-ex="${item.id}" role="button" tabindex="0" onclick="toggle('${item.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggle('${item.id}')}">
+    <div class="badge">${item.id}</div>
+    <div class="body"><div class="nm">${item.nm}</div><div class="rx">${item.w[week]}</div>
+    ${item.cue?`<div class="cue">${item.cue}</div>`:''}
+    ${tip?`<div class="tip">▸ ${tip}</div>`:''}</div>
+    <div class="tick">✓</div></div>`;
+}
+function updateBar(dn,tot,label){
+  if(tot===null||tot===0){ $("progLab").innerHTML=label; $("progFill").style.width="0%"; return; }
+  $("progLab").innerHTML=`<b>${label}</b> · ${dn}/${tot}`;
+  $("progFill").style.width=Math.round(100*dn/tot)+"%";
+}
+function render(){
+  const main=$("main");
+  if(day==="info"){ main.innerHTML=infoHTML(); updateBar(null,null,"Phase III · Info"); return; }
+  if(day==="sun"){
+    main.innerHTML=`<div class="rest">${SPINE_ICON(30,74,.9)}<h2 style="margin-top:14px">Sunday — Rest</h2>
+      <p>Recovery is when the disc actually heals. Optional: a 30-minute easy walk and some soft tissue work — nothing hard.</p></div>`;
+    updateBar(null,null,"Sunday · Rest"); return;
+  }
+  const d=DAYS[day];
+  if(!d.segs.includes(seg)) seg=d.segs.includes("lift")?"lift":d.segs[0];
+  const chips=(week===6?'<span class="chip">Deload</span>':'')
+    +(d.stress?`<span class="chip">${d.stress}</span>`:'')
+    +(d.sauna?'<span class="chip">Sauna</span>':'');
+  let html=`<div class="dayhead"><h2>${d.label} <span style="color:var(--dim);font-size:15px">· ${d.tag}</span></h2><div class="chips">${chips}</div></div>
+  <p class="flow"><b>Flow:</b> ${d.flow}</p>`;
+  if(d.segs.length>1){
+    html+=`<div class="segbar">`+d.segs.map(s=>`<button class="seg ${s===seg?'active':''}" onclick="setSeg('${s}')">${SEGNAMES[s]}</button>`).join("")+`</div>`;
+  }
+  if(seg==="tat"){
+    html+=`<div class="ph">${SPINE_ICON(26,62,.9)}<h3 style="margin-top:10px">Training @ TAT</h3><p>To be filled in</p></div>`;
+    main.innerHTML=`<div class="animseg">`+html+`</div>`; updateBar(null,null,d.label+" · TAT"); return;
+  }
+  html+=`<div class="heroband">${SPINE_DISC}<div class="txt"><div class="lbl">Spine-safe rule</div><div class="cue">${cueFor(seg)}</div></div></div>`;
+  if(seg==="lift"&&d.note) html+=`<div class="daynote">${d.note}</div>`;
+  const data=segData();
+  let tot=0,dn=0;
+  data.forEach(b=>{
+    const bt=BLOCK_TIPS[b.h];
+    html+=`<div class="blockhead">${SPINE_VERT}${b.h}</div>`+(bt?`<div class="blocktip">${bt}</div>`:"")+b.items.map(exCard).join("");
+    tot+=b.items.length; dn+=b.items.filter(i=>done[day+"-"+seg+"-"+i.id]).length;
+  });
+  if(seg==="prehab") html+=`<div class="note">Run as circuits, not straight sets — the circuit is the rest. About 19 minutes.</div>`;
+  if(seg==="rehab")  html+=`<div class="note">About 20 minutes. Active work first, then nerve work, then lengthen, then decompress — qi gong is the last thing you do.</div>`;
+  html+=`<div class="segwatch">${SPINE_DISC}<div class="t"><b>Watch for:</b> pain that stays local and fades in 24h is the back adapting. Anything travelling into the glute or down the leg — stop, regress, tell your PT.</div></div>`;
+  html+=`<div class="clearrow"><a href="#" onclick="clearSeg(event)">Clear ${SEGNAMES[seg]} checks</a></div>`;
+  html+=`<div class="footspine">${SPINE_ANAT.replace('width="54" height="248"','width="26" height="120"')}<div class="ft">Pain Free Movement</div></div>`;
+  main.innerHTML=`<div class="animseg">`+html+`</div>`;
+  updateBar(dn,tot,d.label+" · "+SEGNAMES[seg]);
+}
+function infoHTML(){
+  return `<div class="info"><div style="text-align:center;padding:6px 0 2px">${SPINE_ICON(28,68,.9)}</div>
+  <h3>The 7-week shape</h3><ul>
+   <li><span class="d">Wk 1–2 · Learn.</span> Same reps both weeks — add load in week 2, not volume. Lots of new patterns this phase.</li>
+   <li><span class="d">Wk 3–4 · Build.</span> Reps hold, load climbs. Take your PT check and thigh/calf measurements at the end of week 4.</li>
+   <li><span class="d">Wk 5–6 · Peak.</span> Highest loads and bench ranges of the phase.</li>
+   <li><span class="d">Wk 7 · Deload.</span> <b>Mandatory.</b> Half the sets, ~20% lighter, every rep fast and crisp.</li></ul>
+  <h3>High–low split</h3><p>HIGH days (Mon, Wed, Fri) carry the heavy and explosive work. LOW days (Tue, Thu) are lighter loads, skill and technique. Thursday is low on load but high on rotation — Friday-morning stiffness is the check on that stack.</p>
+  <h3>Autoregulation</h3><p>Load ranges are guardrails, not targets. <b>The rule is reps-in-reserve.</b> Moving well, take the top of the range. Feeling flat, take the bottom — no guilt. Bar speed ends the set. If the back talks, that overrides everything.</p>
+  <p class="d">The bench ranges are placeholders — reset them from where Phase 2 actually finished.</p>
+  <h3>Right-leg rule</h3><p>Right leg first on every single-leg set, and the left only matches what the right completes — never more.</p>
+  <h3>Needs your PT's yes before Week 1</h3><ul>
+   <li>Barbell power clean and snatch (Fri)</li>
+   <li>Single-leg drop-to-stick (Wed) and single-leg box jumps (Fri)</li>
+   <li>A- and B-skips (Wed)</li>
+   <li>Heavy bag (Tue, Thu)</li>
+   <li>Jefferson curl (Mon, Thu)</li></ul>
+  <h3>Time governor</h3><p>Lifting stops at 70 minutes on most days; Friday runs longer. Blocks are ordered by priority — the last blocks are the trim on a tight morning.</p>
+  <h3>Back-off signals</h3><p class="d">Bench top sets stalling, morning back stiffness trending up, or joints aching from volume — cut the tail blocks for a week.</p>
+  <h3>Still parked</h3><p class="d">Land sprints, depth jumps, landing from height, broad jumps, barbell back squats and conventional deadlifts, wrestler bridges, sit-ups.</p>
+  <h3>Guardrails</h3><p>Neutral spine every rep. Quiet landings. A mild local ache that settles in 24h is fine — anything radiating into the glute or leg means stop, regress, and tell your PT. No heavy lifting within about an hour of waking.</p></div>`;
+}
+window.setWeek=i=>{week=i;saveWeek();renderWeeks();render();};
+window.setDay=id=>{day=id; const d=DAYS[id]; seg=d?(d.segs.includes("lift")?"lift":d.segs[0]):"lift"; renderTabs();render();};
+window.setSeg=s=>{seg=s;render();};
+window.toggle=id=>{const k=day+"-"+seg+"-"+id; const adding=!done[k];
+  adding?done[k]=1:delete done[k]; saveDone(); render();
+  if(adding){const el=document.querySelector('[data-ex="'+id+'"]');
+    if(el){el.classList.add('justdone'); setTimeout(()=>el.classList.remove('justdone'),520);}}};
+window.clearSeg=e=>{e.preventDefault(); Object.keys(done).forEach(k=>{if(k.startsWith(day+"-"+seg+"-"))delete done[k];}); saveDone(); render();};
+
+/* ---------- rest timer ---------- */
+let timerId=null,timerEnd=0,actx=null;
+function beep(){try{ if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();
+  [0,.22].forEach(t=>{const o=actx.createOscillator(),g=actx.createGain();o.type="square";o.frequency.value=880;
+   g.gain.setValueAtTime(.08,actx.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+t+.15);
+   o.connect(g);g.connect(actx.destination);o.start(actx.currentTime+t);o.stop(actx.currentTime+t+.16);});}catch(e){}}
+window.timerTap=()=>{const btn=$("timerBtn");
+  if(timerId){clearInterval(timerId);timerId=null;btn.textContent="Rest 90s";btn.className="timerbtn";return;}
+  try{if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
+  timerEnd=Date.now()+90000; btn.className="timerbtn running";
+  timerId=setInterval(()=>{const r=timerEnd-Date.now();
+    if(r<=0){clearInterval(timerId);timerId=null;btn.textContent="GO";btn.className="timerbtn donef";beep();
+      setTimeout(()=>{if(!timerId){btn.textContent="Rest 90s";btn.className="timerbtn";}},2500);return;}
+    const s=Math.ceil(r/1000);btn.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0");},200);};
+
+/* ---------- init: opens to today ---------- */
+(async function(){
+  const wd=new Date().getDay();
+  const map={1:"mon",2:"tue",3:"wed",4:"thu",5:"fri",6:"sat",0:"sun"};
+  day=map[wd]||"mon";
+  const d=DAYS[day]; seg=d?(d.segs.includes("lift")?"lift":d.segs[0]):"lift";
+  $("todayLabel").textContent=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][wd];
+  $("runner").innerHTML='<div class="markrow">'+SPINE_ANAT.replace('width="54" height="248"','width="22" height="92"')+LOTUS+'</div>';
+  const railHTML=SPINE_ANAT+'<div class="railtxt">Pain Free Movement</div>';
+  $("railL").innerHTML=railHTML; $("railR").innerHTML=railHTML;
+  await loadState(); renderWeeks(); renderTabs(); render();
+})();
+
+</script>
+</body>
+</html>
